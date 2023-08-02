@@ -19,52 +19,30 @@ export default {
       postContent :""
     }
   },
+  async mounted(){
+    const profile = await client.request("i",{detail:false});
+    this.profile = profile;
+  },
   methods:{
-    async misskey() {
-      const res = await fetch("https://misskey.systems/api/i",{
-        method:"POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body:JSON.stringify({
-          "i":"",
-          "detail":false
-        })
-      })
-      this.profile = await res.json()
-    },
-    async getTimeline() {
-      const res = await fetch("https://misskey.systems/api/notes/local-timeline",{
-        method:"POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body:JSON.stringify({
-          "i":"",
-        }),
-        Params:JSON.stringify({"limit":"10"})
-      })
-      this.timeline = await res.json();
-    },
-    async getMisskeyAPI(){
-      const profile = await client.request("i",{detail:false});
-      this.profile = profile;
-    },
     async postMisskey(){
       await client.request("notes/create",{text:this.postContent});
       this.postContent = ""
+    },
+    async getMisskeyTimelien(){
+      const timeline = await client.request("notes/local-timeline",{limit:10});
+      this.timeline = timeline;
     }
   }
 }
 </script>
 
 <template>
-  <div>
-    <div>{{this.profile.name}}</div>
-    <img :src="profile.avatarUrl" />
-    <button @click="misskey()">Misskey!</button>
-    <button @click="getTimeline()">TimeLine!</button>
-    <button @click="getMisskeyAPI()">MisskeyJS!</button>
+  <div class="d-flex flex-column">
+    <div class="d-flex flex-column align-center">
+      <img style="width:100px; height:100px;" :src="profile.avatarUrl" />
+      <div style="width:300px; height:30px;">{{this.profile.name}}</div>
+    </div>
+    <button @click="getMisskeyTimelien()">TimeLineを取得</button>
     <input type="text" v-model="postContent" /><button @click="postMisskey()">
       押すよ！
     </button>
@@ -76,9 +54,6 @@ export default {
         >{{item.text}}</v-list-item
       >
     </v-list>
-    <HelloWorld>
-      <img src="https://images.dog.ceo/breeds/weimaraner/n02092339_6869.jpg"
-    /></HelloWorld>
   </div>
 </template>
 
