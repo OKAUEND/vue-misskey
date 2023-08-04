@@ -35,6 +35,9 @@ export default {
     async getMisskeyTimelien(){
       const timeline = await client.request("notes/local-timeline",{limit:10});
       this.timeline = timeline;
+    },
+    addFilesIds(fileId){
+      this.files.push(fileId)
     }
   }
 }
