@@ -16,12 +16,16 @@ export default {
       profile:{},
       timeline:[],
       meta:{},
-      postContent :""
+      postContent :"",
+      drives:[],
+      files:[],
     }
   },
   async mounted(){
     const profile = await client.request("i",{detail:false});
+    const drives = await client.request("drive/files",{limit:99})
     this.profile = profile;
+    this.drives = drives
   },
   methods:{
     async postMisskey(){
@@ -53,6 +57,12 @@ export default {
           <v-img :src="item.user.avatarUrl" /></v-avatar
         >{{item.text}}</v-list-item
       >
+    </v-list>
+    <v-list lines="two">
+      <v-list-item v-for="(file,index) in drives" :key="index">
+        <v-btn @click="addFilesIds(file.id)" variant="outlined"> 加える</v-btn
+        ><v-img :src="file.thumbnailUrl"
+      /></v-list-item>
     </v-list>
   </div>
 </template>
