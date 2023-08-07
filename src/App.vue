@@ -19,6 +19,7 @@ export default {
       postContent :"",
       drives:[],
       files:[],
+      uploadImage:{},
     }
   },
   async mounted(){
@@ -29,8 +30,9 @@ export default {
   },
   methods:{
     async postMisskey(){
-      await client.request("notes/create",{text:this.postContent});
+      await client.request("notes/create",{text:this.postContent,fileIds:this.files});
       this.postContent = ""
+      this.files = []
     },
     async getMisskeyTimelien(){
       const timeline = await client.request("notes/local-timeline",{limit:10});
@@ -38,6 +40,10 @@ export default {
     },
     addFilesIds(fileId){
       this.files.push(fileId)
+    },
+    attachFile(){
+      this.uploadImage = this.$refs.image.files[0];
+      console.log(this.uploadImage)
     }
   }
 }
@@ -53,6 +59,8 @@ export default {
     <input type="text" v-model="postContent" /><button @click="postMisskey()">
       押すよ！
     </button>
+    <input type="file" @change="attachFile" ref="image" />
+    <v-btn @click="uploadFile()">画像をアップロード！</v-btn>
     {{postContent}}
     <v-list lines="one">
       <v-list-item v-for="(item,index) in timeline" :key="index"
