@@ -77,11 +77,12 @@ export default {
     </div>
     <button @click="getMisskeyTimelien()">TimeLineを取得</button>
     <input type="text" v-model="postContent" /><button @click="postMisskey()">
-      押すよ！
+      とうこう！
     </button>
     <input type="file" @change="attachFile" ref="image" />
     <v-btn @click="uploadFile()">画像をアップロード！</v-btn>
     {{postContent}}
+    {{files}}
     <v-list lines="one">
       <v-list-item v-for="(item,index) in timeline" :key="index"
         ><v-avatar :image="item.avatarUrl">
