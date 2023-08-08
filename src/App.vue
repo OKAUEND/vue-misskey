@@ -20,6 +20,8 @@ export default {
       drives:[],
       files:[],
       uploadImage:{},
+      credential:import.meta.env.VITE_MISSKEY_TOKEN,
+      origin:'https://misskey.systems',
     }
   },
   async mounted(){
@@ -44,6 +46,24 @@ export default {
     attachFile(){
       this.uploadImage = this.$refs.image.files[0];
       console.log(this.uploadImage)
+    },
+    async uploadFile(){
+      const params = new FormData();
+      //画像ファイルをアップロードする時、file/i(TOKEN)/nameは必須
+      params.append("file",this.uploadImage)
+      params.append("i",this.credential)
+      params.append("name",this.uploadImage.name)
+
+      const response = await fetch(`${this.origin}/api/drive/files/create`,{
+        method:"POST",
+        body:params,
+        credentials: 'omit',
+        cache: 'no-cache',
+      })
+      const data = await response.json();
+      //dataの中にはアップロードした戻り値のファイル情報が格納されている。
+      //data.idで、対象ファイルのIDを取得できる
+      this.addFilesIds(data.id)
     }
   }
 }
